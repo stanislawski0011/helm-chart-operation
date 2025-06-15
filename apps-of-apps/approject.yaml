@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: my-app-project
+  namespace: argocd
+spec:
+  description: Project for the 'my-app' application set
+  sourceRepos:
+  - 'https://github.com/stanislawski0011/helm-chart3.git'
+  - 'https://github.com/stanislawski0011/helm-chart-operation.git'
+  destinations:
+  - name: dev-global-cluster-0
+    namespace: my-app-dev
+  - name: prd-global-cluster-5
+    namespace: my-app-prd
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'

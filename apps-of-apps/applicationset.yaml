@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: my-app-applicationset
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - env: dev
+        cluster: dev-global-cluster-0
+        valuesPath: development
+        valuesRepoURL: 'https://github.com/stanislawski0011/helm-chart-operation.git'
+      - env: prd
+        cluster: prd-global-cluster-5
+        valuesPath: production
+        valuesRepoURL: 'https://github.com/stanislawski0011/helm-chart-operation.git'
+  template:
+    metadata:
+      name: 'my-app-{{env}}'
+      namespace: argocd
+    spec:
+      project: my-app-project
+      sources:
+        - repoURL: 'https://github.com/stanislawski0011/helm-chart3.git'
+          chart: my-chart
+          targetRevision: HEAD
+          helm:
+            valueFiles:
+            - '$values/environments/{{valuesPath}}/values.yaml'
+        - repoURL: '{{valuesRepoURL}}'
+          targetRevision: HEAD
+          ref: values
+      destination:
+        name: '{{cluster}}'
+        namespace: 'my-app-{{env}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true

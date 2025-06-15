@@ -1,0 +1,1 @@
+Another repository "operations" for argoCD deployment should look on this folder in "apps of apps" structure.
